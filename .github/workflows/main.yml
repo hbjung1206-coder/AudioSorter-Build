@@ -6,28 +6,32 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest  # 여기가 핵심! 윈도우 환경에서 실행하라는 뜻
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    # 체크아웃 도구도 최신(v4)으로 변경
+    - uses: actions/checkout@v4
 
+    # 파이썬 설정 도구도 최신(v5)으로 변경
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10' # 파이썬 버전 설정
+        python-version: '3.11' # 버전도 안정적인 최신 3.11로 올림
 
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pyinstaller
-        # 만약 다른 라이브러리(pandas 등)를 썼다면 여기에 pip install ... 추가
+        # 필요한 경우 추가 라이브러리 설치 (예: pip install pandas)
 
     - name: Build with PyInstaller
       run: |
-        pyinstaller --noconsole --onefile --name="SmartAudioSorter" SmartAudioSorter.py
+        # --clean 옵션 추가해서 더 깔끔하게 빌드
+        pyinstaller --clean --noconsole --onefile --name="SmartAudioSorter" SmartAudioSorter.py
 
+    # ★ 여기가 핵심! v3 -> v4로 변경됨
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Windows-EXE-File
         path: dist/SmartAudioSorter.exe
